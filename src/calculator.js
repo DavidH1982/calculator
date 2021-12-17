@@ -1,6 +1,6 @@
 import { useState } from "react"
 import './calculator.css'
-// import {all} from "mathjs"
+import { evaluate } from "mathjs"
 
 const Calc = () => {
 
@@ -12,17 +12,24 @@ const Calc = () => {
     const clear =() => {
         setUserInput("");
     }
+    const handler = (button) => {
+        if(button === "="){
+            setUserInput(evaluate(userInput))
+        } else {
+            setUserInput(userInput + button)
+        }
+    }
     return (
         <div>
             <div id="calcBody">              
                 <div>
-                    <textarea id="screen" value={userInput} onChange={updateInput} />
-                    <div className="numButtons" id="clearButton" onClick={clear}><h1>C</h1></div>
+                    <input type="text" id="screen" value={userInput} onChange={updateInput} placeholder="0"/>
+                    <div className="numButtons" id="clearButton" onClick={clear}><button><h1>C</h1></button></div>
                 </div>
                 <div id="calcNumButtons">                   
-                    {buttonNums.map((item, index) => {
+                    {buttonNums.map((button, index) => {
                         return (
-                        <Card index={index} key={index} item={item} value={item} />)
+                        <Card key={index} button={button} handler={handler}/>)
                     })}              
                 </div>
             </div>
@@ -32,10 +39,9 @@ const Calc = () => {
 
 const Card = (props) => {
     return (
-        <div className="numButtons" onClick={props.item}>
-            <h1>{props.item}</h1>
+        <div className="numButtons">
+            <button onClick={()=> props.handler(props.button)}><h1>{props.button}</h1></button>
         </div>
-
     )
 }
 
